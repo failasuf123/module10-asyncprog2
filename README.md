@@ -39,3 +39,32 @@ server.rs:
     - Server memiliki loop yang secara bersamaan menerima pesan dari client melalui WebSocket dan pesan yang di-broadcast ke semua client.
     -  Saat pesan diterima dari client, server akan mencetak pesan tersebut ke terminal dengan format "From client [alamat client]: [pesan]".
     - Saat pesan diterima dari broadcast channel (bcast_rx), server akan mengirim pesan tersebut ke semua client yang terkoneksi melalui WebSocket.
+
+    
+
+__## 2.2 Modifying the websocket port__
+> File lain yang perlu dimodifikasi adalah server.rs karena itu adalah bagian dari aplikasi yang berperan sebagai server dalam koneksi websocket. Pada file server.rs, protokol websocket juga digunakan dengan import modul tokio_websockets::{Message, ServerBuilder, WebSocketStream};, yang menunjukkan bahwa protokol websocket yang sama digunakan di sini. Definisi protokol websocket ini juga dapat ditemukan di dalam modul tokio_websockets.
+
+
+
+__## 2.3Small changes. Add some information to client__
+
+### client view
+- ![Gambar2.1](static/231ss.png)
+### server view
+- ![Gambar2.1](static/232ss.png)
+
+Saya menambahkan seperti ini
+
+```
+let response = match text.trim().to_lowercase().as_str() {
+    "hai" => "hallo",
+    "hallo" => "hai",
+};
+bcast_tx.send(response.to_owned())?;
+
+```
+
+
+- match digunakan untuk membandingkan pesan dengan pola yang sudah ditentukan. Jika pesan adalah "hai", server akan merespons dengan "hallo". Jika pesan adalah "hallo", server akan merespons dengan "hai".
+- bcast_tx.send(response.to_owned())? digunakan untuk mengirimkan respons dari server ke client menggunakan channel broadcast.

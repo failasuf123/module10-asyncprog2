@@ -27,7 +27,12 @@ async fn handle_connection(
                     Some(Ok(msg)) => {
                         if let Some(text) = msg.as_text() {
                             println!("From client {addr:?} {text:?}");
-                            bcast_tx.send(text.into())?;
+                            let response = match text.trim().to_lowercase().as_str() {
+                                "hai" => "hallo",
+                                "hallo" => "hai",
+                                _ => "Unknown message",
+                            };
+                            bcast_tx.send(response.to_owned())?;
                         }
                     }
                     Some(Err(err)) => return Err(err.into()),
@@ -39,6 +44,7 @@ async fn handle_connection(
             }
         }
     }
+
 }
 
 #[tokio::main]
